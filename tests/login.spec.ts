@@ -3,7 +3,7 @@ import { TestUsers, ErrorMessages } from '../utils/testData';
 
 test.describe('Login functionality', () => {
 
-    test.only('should login successfully with valid credentials',
+    test('should login successfully with valid credentials',
         async ({ loginPage, page }) => {
             await loginPage.login(
                 TestUsers.validUser.username,
@@ -14,11 +14,22 @@ test.describe('Login functionality', () => {
         }
     );
 
-    test('should show error for invalid credentials',
+    test('should show error for invalid password',
+        async ({ loginPage }) => {
+            await loginPage.login(
+                TestUsers.validUser.username,
+                TestUsers.invalidUser.password
+            );
+            const error = await loginPage.getErrorMessage();
+            expect(error).toContain(ErrorMessages.invalidCredentials);
+        }
+    );
+
+    test('should show error for invalid userName',
         async ({ loginPage }) => {
             await loginPage.login(
                 TestUsers.invalidUser.username,
-                TestUsers.invalidUser.password
+                TestUsers.validUser.password
             );
             const error = await loginPage.getErrorMessage();
             expect(error).toContain(ErrorMessages.invalidCredentials);
